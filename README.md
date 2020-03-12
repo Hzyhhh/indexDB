@@ -1,14 +1,4 @@
-# 探索 indexDB--浏览器储存之对比**storage**和**indexDB**
-
-In the project directory, you can run:
-
-### `yarn`
-
-### `yarn start`
-
-you can build:
-
-### `yarn build`
+# 探索 indexDB--浏览器储存之对比**localStorage**和**indexDB**
 
 ---
 
