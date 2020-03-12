@@ -2,6 +2,8 @@
 
 In the project directory, you can run:
 
+### `yarn`
+
 ### `yarn start`
 
 you can build:
@@ -162,8 +164,6 @@ var transaction = db.transaction(dbName, "readwrite");
   }
 ```
 
-
-
 ## 兼容性
 
 ![caniuse](/caniuse.jpg)
@@ -173,7 +173,7 @@ var transaction = db.transaction(dbName, "readwrite");
 ### indexedDB 存储和 localStorage 存储对比
 
 - indexedDB 存储 IE10+支持，localStorage 存储 IE8+支持，后者兼容性更好
-- indexedDB 存储比较适合键值对较多的数据.在使用localStorage 存储时，每次写入和写出都要字符串化和对象化，很麻烦，但如果使用 indexedDB 会轻松很多，因为无需数据转换。
+- indexedDB 存储比较适合键值对较多的数据.在使用 localStorage 存储时，每次写入和写出都要字符串化和对象化，很麻烦，但如果使用 indexedDB 会轻松很多，因为无需数据转换。
 - indexedDB 存储可以在 workers 中使用，localStorage 貌似不可以。这就使得在进行 PWA 开发的时候，数据存储的技术选型落在了 indexedDB 存储上面。
 
 > 总结下就是，如果是浏览器主窗体线程开发，同时存储数据结构简单，例如，就存个 true/false，显然 localStorage 上上选；如果数据结构比较复杂，同时对浏览器兼容性没什么要求，可以考虑使用 indexedDB；如果是在 Service Workers 中开发应用，只能使用 indexedDB 数据存储。
