@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { Form, Input, Select, Tooltip, Button, DatePicker } from "antd";
 import moment from "moment";
 import useDatabaseModel from "./indexDB";
@@ -6,7 +6,7 @@ import useDatabaseModel from "./indexDB";
 const { Option } = Select;
 
 export const Demo = props => {
-  const DB = useDatabaseModel("gzb", 1);
+  const DB = useDatabaseModel("info", 2);
   const { onChange } = props;
 
   const handleSubmit = async values => {

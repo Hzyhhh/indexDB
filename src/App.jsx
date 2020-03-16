@@ -1,13 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Table, Modal } from "antd";
-import { ExclamationCircleOutlined } from "@ant-design/icons";
+import { Table, message, Popconfirm } from "antd";
 import { Demo } from "./container";
-
 import useDatabaseModel from "./container/indexDB";
 
 import "./App.css";
-
-const { confirm } = Modal;
 
 const columns = [
   {
@@ -28,20 +24,17 @@ const columns = [
 ];
 
 function App() {
-  const DB = useDatabaseModel("gzb", 1);
+  const DB = useDatabaseModel("info", 2);
   const [value, setValue] = useState();
 
-  const handleClick = r => {
-    confirm({
-      title: "Tips",
-      icon: <ExclamationCircleOutlined />,
-      content: "Do you Want to delete?",
-      async onOk() {
-        await DB.delete(r.id);
-        const list = await DB.readAll();
-        list && setValue(list);
-      }
-    });
+  const handleClick = async r => {
+    try {
+      await DB.delete(r.id);
+      const list = await DB.readAll();
+      list && setValue(list);
+    } catch (error) {
+      message.error(error);
+    }
   };
 
   useEffect(() => {
@@ -55,14 +48,24 @@ function App() {
     columns.push({
       title: "操作",
       align: "center",
-      render: r => <a onClick={() => handleClick(r)}>删除</a>
+      render: r => (
+        <Popconfirm title="Sure to delete?" onConfirm={() => handleClick(r)}>
+          <a>删除</a>
+        </Popconfirm>
+      )
     });
   }, []);
 
   return (
     <div className="wrapper">
       <Demo onChange={setValue} />
-      <Table id="id" size="small" dataSource={value} columns={columns} />
+      <Table
+        id="id"
+        rowClassName={() => "editable-row"}
+        size="small"
+        dataSource={value}
+        columns={columns}
+      />
     </div>
   );
 }

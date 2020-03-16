@@ -5,14 +5,13 @@ class DB {
 
   constructor(name, version) {
     Object.assign(this, { name, version });
-    this.DBOpenRequest = window.indexedDB.open(name, version);
+    this.DBOpenRequest = window.indexedDB.open("gzb", version);
     this.DBOpenRequest.onupgradeneeded = this.onupgradeneeded.bind(this);
   }
   onReady() {
     return new Promise((resolve, reject) => {
       // request.onsuccess会返回一个Event
       // Event.target.result是一个IDBDatabase对象, 正好跟this.DBOpenRequest.result返回的是同一个东西
-
       this.DBOpenRequest.onsuccess = e => {
         this.onsuccess.call(this);
         resolve();
@@ -37,7 +36,7 @@ class DB {
     this.db = evt.target.result;
     const { name, db } = this;
     if (!db.objectStoreNames.contains(name)) {
-      const objectStore = db.createObjectStore("info", {
+      const objectStore = db.createObjectStore(name, {
         keyPath: "id",
         autoIncrement: true
       });
@@ -46,8 +45,6 @@ class DB {
       objectStore.createIndex("province", "province");
       objectStore.createIndex("address", "address");
       objectStore.createIndex("birthDate", "birthDate");
-
-      objectStore.createIndex("remark", "remark");
     }
 
     console.log("---onupgradeneeded---");
@@ -57,31 +54,28 @@ class DB {
 
   // 对数据库进行操作时 需要先获取到IDBDatabase对象
   add(item) {
-    this.db = this.DBOpenRequest.result;
-
-    const request = this.objectStore.add(item);
     return new Promise((resolve, reject) => {
+      this.db = this.DBOpenRequest.result;
+      const request = this.objectStore.add(item);
       request.onsuccess = resolve;
       request.onerror = reject;
     });
   }
 
   delete(id) {
-    this.db = this.DBOpenRequest.result;
-
-    const request = this.objectStore.delete(id);
     return new Promise((resolve, reject) => {
+      this.db = this.DBOpenRequest.result;
+      const request = this.objectStore.delete(id);
       request.onsuccess = resolve;
       request.onerror = reject;
     });
   }
 
   readAll() {
-    const request = this.objectStore.openCursor();
-
-    const list = [];
-
     return new Promise((resolve, reject) => {
+      const list = [];
+      const request = this.objectStore.openCursor();
+
       request.onsuccess = evt => {
         const cursor = evt.target.result;
 
@@ -113,5 +107,16 @@ class DB {
 }
 
 export default function useDatabaseModel(name, version) {
-  return new DB(name, version);
+  const payload = new DB(name, version);
+  return payload.getInstance;
 }
+
+// 单例模式优化
+DB.prototype.getInstance = (function() {
+  let instance;
+  if (!instance) {
+    instance = new DB();
+  }
+  console.log(instance);
+  return instance;
+})();
