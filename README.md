@@ -1,4 +1,4 @@
-# 探索 indexDB--浏览器储存之对比**localStorage**和**indexDB**
+# 客户端储存: 对比localStorage和indexDB(2020.3.13)
 
 ## 背景
 
